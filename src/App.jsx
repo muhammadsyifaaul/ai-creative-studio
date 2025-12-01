@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sparkles, Image, MessageSquare, Loader2, Download, Copy, Check, AlertCircle } from 'lucide-react';
-
+import { API_BASE_URL } from "./config";
 export default function App() {
   const [activeTab, setActiveTab] = useState('chat');
   const [chatInput, setChatInput] = useState('');
@@ -27,7 +27,7 @@ export default function App() {
 
   useEffect(() => {
     // Check if backend is running
-    fetch('http://localhost:3000/api/health')
+    fetch(`${API_BASE_URL}/api/health`)
       .then(() => setBackendAvailable(true))
       .catch(() => setBackendAvailable(false));
   }, []);
@@ -43,7 +43,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/api/chat', {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/api/image', {
+      const response = await fetch(`${API_BASE_URL}/api/image`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3000/api/image-free', {
+      const response = await fetch(`${API_BASE_URL}/api/image-free`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputs: imagePrompt })
