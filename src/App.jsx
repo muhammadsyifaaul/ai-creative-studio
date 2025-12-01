@@ -27,7 +27,7 @@ export default function App() {
 
   useEffect(() => {
     // Check if backend is running
-    fetch('http://localhost:3001/api/health')
+    fetch('http://localhost:3000/api/health')
       .then(() => setBackendAvailable(true))
       .catch(() => setBackendAvailable(false));
   }, []);
@@ -43,7 +43,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/chat', {
+      const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/image', {
+      const response = await fetch('http://localhost:3000/api/image', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:3001/api/image-free', {
+      const response = await fetch('http://localhost:3000/api/image-free', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ inputs: imagePrompt })
