@@ -34,61 +34,66 @@ export default function App() {
 
   // Real AI Chat with Claude API via Proxy
   const handleRealChatSubmit = async () => {
-    if (!chatInput.trim()) return;
+  if (!chatInput.trim()) return;
+
+  const userMessage = { role: "user", content: chatInput };
+  setChatMessages(prev => [...prev, userMessage]);
+  setChatInput("");
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1024,
+        messages: [...chatMessages, userMessage]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) throw new Error(data.error || "Server error");
+
+    let aiText = "";
+
     
-    const userMessage = { role: 'user', content: chatInput };
-    setChatMessages(prev => [...prev, userMessage]);
-    setChatInput('');
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1024,
-          messages: chatMessages.concat(userMessage).map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok || data.error) {
-        const errorMsg = data.error?.message || `Server returned ${response.status}`;
-        throw new Error(errorMsg);
-      }
-
-      if (!data.content || !data.content[0]) {
-        throw new Error('Invalid response format from API');
-      }
-
-      const aiMessage = {
-        role: 'assistant',
-        content: data.content[0].text
-      };
-      
-      setChatMessages(prev => [...prev, aiMessage]);
-    } catch (err) {
-      const errorMessage = err.message || 'Unknown error occurred';
-      setError(`Chat Error: ${errorMessage}. Check console for details.`);
-      console.error('Chat error details:', err);
-      
-      // Fallback to demo mode on error
-      setChatMessages(prev => [...prev, {
-        role: 'assistant',
-        content: '⚠️ Error connecting to AI API. Please check your API key and try again.'
-      }]);
-    } finally {
-      setIsLoading(false);
+    if (data.choices?.[0]?.message?.content) {
+      aiText = data.choices[0].message.content;
     }
-  };
+
+    
+    else if (data.content?.[0]?.text) {
+      aiText = data.content[0].text;
+    }
+
+    
+    else {
+      throw new Error("Invalid response format from API");
+    }
+
+    setChatMessages(prev => [
+      ...prev,
+      { role: "assistant", content: aiText }
+    ]);
+  } catch (err) {
+    console.error("Chat error:", err);
+    setError(`Chat Error: ${err.message}`);
+
+    setChatMessages(prev => [
+      ...prev,
+      {
+        role: "assistant",
+        content: "⚠️ Error connecting to AI API. Please check your API key."
+      }
+    ]);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // Simulated AI Chat (Fallback)
   const handleSimulatedChat = async () => {
