@@ -552,9 +552,9 @@ export default function App() {
       <footer className="border-t border-white/10 mt-12">
         <div className="max-w-6xl mx-auto px-4 py-6 text-center text-purple-200 text-sm">
           <p className="font-medium">Built with React + Vite + Tailwind CSS</p>
-          <p className="mt-2">Portfolio Project for madebyhumans AI Engineer Internship</p>
+          <p className="mt-2">Portfolio Project by <a href="https://www.linkedin.com/in/syifaauljinan/" target="_blank" className="underline">Muhammad Syifaaul Jinan</a></p>
           <p className="mt-1 text-xs">
-            Technologies: Claude API (LLM) • Stable Diffusion XL (Image Gen) • Full-Stack Development
+            Copyright &copy; 2025. All rights reserved.
           </p>
         </div>
       </footer>
