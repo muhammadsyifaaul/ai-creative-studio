@@ -7,7 +7,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(cors());
 app.use(express.json());
 
@@ -147,18 +148,14 @@ app.post("/api/image", async (req, res) => {
     });
   }
 });
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 
 app.use(express.static(path.join(__dirname, "dist")));
 
-// Catch-all untuk route selain API → frontend
-app.get(/.*/, (req, res) => {
-  // Jangan override route API
-  if (req.path.startsWith('/api')) return;
 
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 app.listen(PORT, "0.0.0.0", () => {
