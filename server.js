@@ -5,7 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
+
 
 app.use(cors());
 app.use(express.json());
@@ -108,81 +109,6 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// // Hugging Face API Proxy
-// app.post('/api/image', async (req, res) => {
-//   console.log('🎨 Image generation request:', req.body.inputs);
-  
-//   try {
-//     const apiKey = process.env.HUGGINGFACE_API_KEY;
-    
-//     if (!apiKey) {
-//       throw new Error('HUGGINGFACE_API_KEY not found');
-//     }
-
-//     // Try Stable Diffusion first
-//     let response = await fetch(
-//       'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell',
-//       {
-//         method: 'POST',
-//         headers: {
-//           'Authorization': `Bearer ${apiKey}`,
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           inputs: req.body.inputs,
-//           options: { wait_for_model: true }
-//         })
-//       }
-//     );
-
-//     const contentType = response.headers.get('content-type');
-    
-//     if (contentType && contentType.includes('application/json')) {
-//       const data = await response.json();
-      
-//       if (data.error && data.error.includes('currently loading')) {
-//         console.log('⏳ Model loading, waiting...');
-        
-//         // Wait and retry
-//         await new Promise(resolve => setTimeout(resolve, 5000));
-        
-//         response = await fetch(
-//           'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell',
-//           {
-//             method: 'POST',
-//             headers: {
-//               'Authorization': `Bearer ${apiKey}`,
-//               'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ inputs: req.body.inputs })
-//           }
-//         );
-//       } else if (data.error) {
-//         throw new Error(data.error);
-//       }
-//     }
-
-//     if (!response.ok) {
-//       throw new Error(`Hugging Face API error: ${response.status}`);
-//     }
-
-//     const arrayBuffer = await response.arrayBuffer();
-//     const buffer = Buffer.from(arrayBuffer);
-    
-//     console.log('✅ Image generated, size:', buffer.length, 'bytes');
-//     res.set('Content-Type', 'image/png');
-//     res.send(buffer);
-    
-//   } catch (error) {
-//     console.error('❌ Image generation error:', error);
-//     res.status(500).json({ 
-//       error: {
-//         message: error.message,
-//         type: 'server_error'
-//       }
-//     });
-//   }
-// });
 
 app.post('/api/image', async (req, res) => {
   console.log('🎨 Image generation (Pollinations):', req.body.inputs);
@@ -217,9 +143,9 @@ app.post('/api/image', async (req, res) => {
     });
   }
 });
-app.listen(PORT, () => {
-  console.log(`\n🚀 Proxy server running on http://localhost:${PORT}\n`);
-  console.log(`📋 Environment check:`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 Proxy server running on port ${PORT}\n`);
+
   
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (apiKey) {
