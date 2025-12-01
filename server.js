@@ -28,9 +28,10 @@ app.get("/", (req, res) => {
 });
 
 // SPA fallback untuk React
-app.get("*", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'public/index.html'));
 });
+
 
 // ===============================
 // HEALTH CHECK
